@@ -1,4 +1,11 @@
-import { Facebook, Instagram, Twitter } from "@mui/icons-material";
+import {
+  Facebook,
+  Instagram,
+  Twitter,
+  Room,
+  Phone,
+  MailOutline,
+} from "@mui/icons-material";
 import React from "react";
 import styled from "styled-components";
 
@@ -66,6 +73,18 @@ const Right = styled.div`
   padding: 20px;
 `;
 
+const ContactItem = styled.div`
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+`;
+
+const Payment = styled.img`
+  width: 100%;
+  height: 60px;
+  object-fit: cover;
+`;
+
 const Footer = () => {
   return (
     <Container>
@@ -102,7 +121,22 @@ const Footer = () => {
           <ListItem>Terms</ListItem>
         </List>
       </Center>
-      <Right></Right>
+      <Right>
+        <Title>Contact</Title>
+        <ContactItem>
+          <Room style={{ marginRight: "10px" }} />
+          123 Fake St., Dublin 1
+        </ContactItem>
+        <ContactItem>
+          <Phone style={{ marginRight: "10px" }} />
+          01 234 5678
+        </ContactItem>
+        <ContactItem>
+          <MailOutline style={{ marginRight: "10px" }} />
+          contact@contact.com
+        </ContactItem>
+        <Payment src="https://i.dlpng.com/static/png/7095793_preview.png" />
+      </Right>
     </Container>
   );
 };
