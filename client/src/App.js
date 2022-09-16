@@ -1,6 +1,8 @@
 import Home from "./pages/Home";
 import ProductList from "./pages/ProductList";
 import SingleProduct from "./pages/SingleProduct";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
 import {
   BrowserRouter as Router,
   Routes,
@@ -14,6 +16,8 @@ function App() {
     <div>
       <Router>
         <Routes>
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
             <Route path="/productlist" element={<ProductList />} />
