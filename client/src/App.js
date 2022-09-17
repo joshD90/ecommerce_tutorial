@@ -3,6 +3,7 @@ import ProductList from "./pages/ProductList";
 import SingleProduct from "./pages/SingleProduct";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import Cart from "./pages/Cart";
 import {
   BrowserRouter as Router,
   Routes,
@@ -25,6 +26,7 @@ function App() {
               path="/productlist/singleproduct"
               element={<SingleProduct />}
             />
+            <Route path="/cart" element={<Cart />} />
           </Route>
         </Routes>
       </Router>
