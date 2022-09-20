@@ -2,6 +2,7 @@ const express = require("express");
 const router = require("express").Router();
 const User = require("../models/User.js");
 const CryptoJS = require("crypto-js");
+const jwt = require("jsonwebtoken");
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
@@ -17,7 +18,8 @@ router.post("/register", async (req, res) => {
   });
   try {
     const savedUser = await newUser.save();
-    res.status(201).json(savedUser);
+    const { password, ...rest } = savedUser._doc;
+    res.status(201).json(rest);
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
@@ -34,13 +36,21 @@ router.post("/login", async (req, res) => {
       user.password,
       process.env.CRYPTO_KEY
     );
-    console.log("we have decrypted the password");
-    if (!req.body.username === decrypted.toString(CryptoJS.enc.Utf8)) return;
-    const { password, ...rest } = user._doc;
-    console.log(rest, "we have use rest syntax on this object");
-    res.status(200).json(rest);
+
+    if (req.body.password !== decrypted.toString(CryptoJS.enc.Utf8)) {
+      return res.status(401).json("Wrong Credentials");
+    }
+
+    if (req.body.password === decrypted.toString(CryptoJS.enc.Utf8)) {
+      const accessToken = jwt.sign(
+        { id: user._id, admin: user.admin },
+        process.env.JWT_SECRET,
+        { expiresIn: "3d" }
+      );
+      const { password, ...rest } = user._doc;
+      res.status(200).json({ ...rest, accessToken });
+    }
   } catch (error) {
-    console.log(error);
     res.status(500).json(error);
   }
 });
