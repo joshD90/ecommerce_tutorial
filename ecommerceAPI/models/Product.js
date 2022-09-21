@@ -9,6 +9,10 @@ const ProductSchema = new mongoose.Schema(
     size: { type: String },
     color: { type: String },
     price: { type: Number, required: true },
+    stripe: {
+      productId: { type: String, require: true },
+      priceId: { type: String, required: true },
+    },
   },
   { timestamps: true }
 );
