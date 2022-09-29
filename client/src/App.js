@@ -13,19 +13,24 @@ import {
 import Layout from "./components/Layout";
 
 function App() {
+  const user = false;
   return (
     <div>
       <Router>
         <Routes>
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
+          <Route
+            path="/register"
+            element={user ? <Navigate to="/" replace /> : <Register />}
+          />
+          <Route
+            path="/login"
+            element={user ? <Navigate to="/" replace /> : <Login />}
+          />
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
-            <Route path="/productlist" element={<ProductList />} />
-            <Route
-              path="/productlist/singleproduct"
-              element={<SingleProduct />}
-            />
+            <Route path="/products" element={<ProductList />} />
+            <Route path="/products/:category" element={<ProductList />} />
+            <Route path="/product/:id" element={<SingleProduct />} />
             <Route path="/cart" element={<Cart />} />
           </Route>
         </Routes>

@@ -7,10 +7,11 @@ const {
   verifyTokenAndAdmin,
 } = require("../routes/verifyToken.js");
 const stripe = require("stripe")(process.env.STRIPE_SECRET);
+const cors = require("cors");
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
-
+router.use(cors({ origin: "http://localhost:3000" }));
 //Create
 router.post("/", verifyTokenAndAdmin, async (req, res) => {
   try {
@@ -102,6 +103,7 @@ router.get("/find/:id", async (req, res) => {
 
 //get all products
 router.get("/", async (req, res) => {
+  console.log("products get endpoint hit");
   const qNew = req.query.qNew;
   const qCategory = req.query.qCategory;
 
@@ -112,6 +114,7 @@ router.get("/", async (req, res) => {
       console.log("qNew is being triggered");
       products = await Product.find().sort({ createdAt: -1 }).limit(5);
     } else if (qCategory) {
+      console.log(qCategory);
       products = await Product.find({
         categories: {
           $in: [qCategory],
@@ -120,8 +123,10 @@ router.get("/", async (req, res) => {
     } else {
       products = await Product.find();
     }
+
     res.status(200).json(products);
   } catch (error) {
+    console.log(error);
     res.status(500).json(error);
   }
 });

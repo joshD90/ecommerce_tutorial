@@ -1,27 +1,32 @@
 import { Add, Remove } from "@mui/icons-material";
 import React from "react";
 import styled from "styled-components";
+import { mobile } from "../responsive";
 
 const Wrapper = styled.div`
   box-sizing: border-box;
   padding: 50px;
   display: flex;
   width: 100vw;
+  ${mobile({ flexDirection: "column", padding: "10px" })}
 `;
 const ImageContainer = styled.div`
   flex: 1;
   width: 50%;
+  ${mobile({ width: "100%", border: "solid 1px black", height: "100px" })}
 `;
 
 const Image = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
+  ${mobile({ height: "50vh" })}
 `;
 
 const InfoContainer = styled.div`
   flex: 1;
   width: 50%;
+  ${mobile({ width: "100%", flexDirection: "column" })}
 `;
 
 const Title = styled.h1`
@@ -42,11 +47,13 @@ const FilterContainer = styled.div`
   justify-content: space-between;
   width: 50%;
   margin: 30px 0;
+  ${mobile({ flexDirection: "column", margin: "20px 0px" })}
 `;
 
 const Filter = styled.div`
   display: flex;
   align-items: center;
+  ${mobile({ marginBottom: "10px" })}
 `;
 
 const FilterTitle = styled.span`
@@ -75,12 +82,21 @@ const AddContainer = styled.div`
   align-items: center;
   width: 50%;
   justify-content: space-between;
+
+  ${mobile({
+    flexDirection: "column",
+    margin: "10px",
+    width: "60%",
+    margin: "auto",
+    alignSelf: "center",
+  })}
 `;
 
 const AmountContainer = styled.div`
   display: flex;
   align-items: center;
 `;
+
 const Amount = styled.span`
   font-weight: 700;
   width: 30px;
@@ -109,7 +125,7 @@ const SingleProduct = () => {
   return (
     <Wrapper>
       <ImageContainer>
-        <Image src="https://asset1.cxnmarksandspencer.com/is/image/mands/Denim-Ripped-Dungarees--6-16-Yrs--2/SD_04_T74_1722E_HP_X_EC_90?$PDP_MAIN_CAR_SM$" />
+        <Image src="https://cdn.shopify.com/s/files/1/0293/9277/products/07-16-20Studio1_RM_DJ_14-52-04_41_RC42044_DarkWash_4135_RA_468x.jpg?v=1594941813" />
       </ImageContainer>
       <InfoContainer>
         <div style={{ padding: "0 50px" }}>
