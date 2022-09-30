@@ -40,6 +40,9 @@ const ProductList = () => {
 
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState("newest");
+  const [category, setCategory] = useState(
+    `${cat.slice(0, 1).toUpperCase()}${cat.slice(1, cat.length)}`
+  );
 
   const handleFilter = (e) => {
     const value = e.target.value;
@@ -48,7 +51,7 @@ const ProductList = () => {
 
   return (
     <Container>
-      <Title>Dresses</Title>
+      <Title>{category}</Title>
       <FilterContainer>
         <Filter>
           <FilterText>Filter Products</FilterText>

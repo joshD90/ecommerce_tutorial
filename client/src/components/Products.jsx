@@ -22,6 +22,7 @@ const Products = ({ cat, filters, sort }) => {
           params: { qCategory: cat },
         });
         setProducts(res.data);
+        setFilteredProducts(res.data);
       } catch (error) {
         console.log(error);
       }
@@ -30,6 +31,7 @@ const Products = ({ cat, filters, sort }) => {
   }, [cat]);
 
   useEffect(() => {
+    if (filters === null || filters === undefined) return;
     Object.keys(filters).length === 0
       ? setFilteredProducts(products)
       : setFilteredProducts(
@@ -42,6 +44,23 @@ const Products = ({ cat, filters, sort }) => {
           })
         );
   }, [cat, products, filters]);
+
+  useEffect(() => {
+    if (sort === null || sort === undefined) return;
+    if (sort === "newest") {
+      setFilteredProducts((prev) => {
+        return [...prev].sort((a, b) => a.createdAt - b.createdAt);
+      });
+    } else if (sort === "asc") {
+      setFilteredProducts((prev) => {
+        return [...prev].sort((a, b) => a.price - b.price);
+      });
+    } else if (sort === "desc") {
+      setFilteredProducts((prev) => {
+        return [...prev].sort((a, b) => b.price - a.price);
+      });
+    }
+  }, [sort]);
 
   return (
     <Container>

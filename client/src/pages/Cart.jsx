@@ -2,6 +2,9 @@ import { Add, Remove } from "@mui/icons-material";
 import React from "react";
 import styled from "styled-components";
 import { mobile } from "../responsive";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { userRequest } from "../requestMethods";
 
 const Container = styled.div`
   padding: 20px;
@@ -155,6 +158,23 @@ const SummaryButton = styled.button`
 `;
 
 const Cart = () => {
+  const cart = useSelector((state) => state.cart);
+  const navigate = useNavigate();
+
+  const submitCheckout = async () => {
+    try {
+      const res = await userRequest.post("/payment/", {
+        items: cart.products.map((product) => {
+          return { id: product._id, quantity: product.quantity };
+        }),
+      });
+      window.location = res.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  console.log(cart);
   return (
     <Container>
       <Title>YOUR BAG</Title>
@@ -169,70 +189,45 @@ const Cart = () => {
       </Top>
       <Bottom>
         <Info>
-          <Product>
-            <Image src="https://pagesix.com/wp-content/uploads/sites/3/2022/01/new-blanace.png?w=640" />
-            <ProductDetail>
-              <Details>
-                <ProductName>
-                  <b>Product:</b> JESSIE THUNDER SHOES
-                </ProductName>
-                <ProductId>
-                  <b>ID:</b> 123432432
-                </ProductId>
-                <ProductColorDiv>
-                  <ProductColor color="#DDAA36" />
-                </ProductColorDiv>
-                <ProductSize>
-                  <b>Size:</b> 6
-                </ProductSize>
-              </Details>
-            </ProductDetail>
-            <PriceDetail>
-              <ProductAmountDiv>
-                <Remove style={{ cursor: "pointer" }} />
-                <ProductAmount>2</ProductAmount>
-                <Add style={{ cursor: "pointer" }} />
-              </ProductAmountDiv>
-              <ProductPrice>€35.00</ProductPrice>
-            </PriceDetail>
-          </Product>
-          <Hr></Hr>
-          <Product>
-            <Image src="https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5/dd6a0013-43bc-4e31-9ca5-c787ecba66aa/air-max-pre-day-se-shoes-0ZVbw2.png" />
-            <ProductDetail>
-              <Details>
-                <ProductName>
-                  <b>Product:</b> NIKE AIR MAX
-                </ProductName>
-                <ProductId>
-                  <b>ID:</b> 54320754398
-                </ProductId>
-                <ProductColorDiv>
-                  <ProductColor color="Yellow" />
-                  <ProductColor color="red" />
-                  <ProductColor color="teal" />
-                </ProductColorDiv>
-
-                <ProductSize>
-                  <b>Size:</b> 6
-                </ProductSize>
-              </Details>
-            </ProductDetail>
-            <PriceDetail>
-              <ProductAmountDiv>
-                <Remove style={{ cursor: "pointer" }} />
-                <ProductAmount>2</ProductAmount>
-                <Add style={{ cursor: "pointer" }} />
-              </ProductAmountDiv>
-              <ProductPrice>€70.00</ProductPrice>
-            </PriceDetail>
-          </Product>
+          {cart.products.map((product, index) => (
+            <Product key={index}>
+              <Image src={product.img} />
+              <ProductDetail>
+                <Details>
+                  <ProductName>
+                    <b>Product:</b> {product.title}
+                  </ProductName>
+                  <ProductId>
+                    <b>ID:</b> {product._id}
+                  </ProductId>
+                  <ProductColorDiv>
+                    <ProductColor color={product.color} />
+                  </ProductColorDiv>
+                  <ProductSize>
+                    <b>Size:</b> {product.size}
+                  </ProductSize>
+                </Details>
+              </ProductDetail>
+              <PriceDetail>
+                <ProductAmountDiv>
+                  <Remove style={{ cursor: "pointer" }} />
+                  <ProductAmount>{product.quantity}</ProductAmount>
+                  <Add style={{ cursor: "pointer" }} />
+                </ProductAmountDiv>
+                <ProductPrice>
+                  € {product.price * product.quantity}
+                </ProductPrice>
+              </PriceDetail>
+              <Hr></Hr>
+            </Product>
+          ))}
         </Info>
+
         <Summary>
           <SummaryTitle>ORDER SUMMARY</SummaryTitle>
           <SummaryItem>
             <SummaryItemText>Subtotal</SummaryItemText>
-            <SummaryItemText>$105.00</SummaryItemText>
+            <SummaryItemText>${cart.total}</SummaryItemText>
           </SummaryItem>
           <SummaryItem>
             <SummaryItemText>Shipping</SummaryItemText>
@@ -245,9 +240,11 @@ const Cart = () => {
 
           <SummaryItem>
             <SummaryItemText type="total">Total</SummaryItemText>
-            <SummaryItemText>$105</SummaryItemText>
+            <SummaryItemText>${cart.total + 6 - 5.9}</SummaryItemText>
           </SummaryItem>
-          <SummaryButton>PROCEED TO PAYMENT</SummaryButton>
+          <SummaryButton onClick={submitCheckout}>
+            PROCEED TO PAYMENT
+          </SummaryButton>
         </Summary>
       </Bottom>
     </Container>

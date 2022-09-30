@@ -11,6 +11,7 @@ router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
 router.post("/", verifyToken, async (req, res) => {
+  console.log("stripe post endpoint hit");
   try {
     //the promise.all holds all the various different promises which are returned
     //from the mongoose find function
@@ -28,8 +29,8 @@ router.post("/", verifyToken, async (req, res) => {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
-      success_url: `${process.env.CLIENT_URL}/payment/success`,
-      cancel_url: `${process.env.CLIENT_URL}/payment/cancel`,
+      success_url: `${process.env.CLIENT_URL}payment/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.CLIENT_URL}payment/cancel`,
       line_items: listOfPriceIds.map((item) => {
         return {
           price: item.priceId,
@@ -41,6 +42,19 @@ router.post("/", verifyToken, async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
+  }
+});
+
+router.get("/success", async (req, res) => {
+  console.log(req.query.session_id, "session id");
+  try {
+    const session = await stripe.checkout.sessions.retrieve(
+      req.query.session_id
+    );
+    console.log(session);
+    res.status(200).json(session);
+  } catch (error) {
+    console.log(error);
   }
 });
 

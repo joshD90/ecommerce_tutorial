@@ -2,8 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import NotificationBadge from "./NotificationBadge";
 import { mobile } from "../responsive";
-
+import { useSelector } from "react-redux";
 import { Search, ShoppingCartOutlined } from "@mui/icons-material";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   height: 60px;
@@ -68,6 +69,8 @@ const MenuItem = styled.div`
 `;
 
 const Navbar = () => {
+  const quantity = useSelector((state) => state.cart.quantity);
+
   return (
     <Container>
       <Wrapper>
@@ -85,10 +88,12 @@ const Navbar = () => {
           <MenuItem>REGISTER</MenuItem>
           <MenuItem>SIGN IN</MenuItem>
           <MenuItem>
-            <NotificationBadge
-              materialUI={<ShoppingCartOutlined />}
-              notifcationNumber="0"
-            />
+            <Link to="/cart">
+              <NotificationBadge
+                materialUI={<ShoppingCartOutlined />}
+                notifcationNumber={quantity}
+              />
+            </Link>
           </MenuItem>
         </Right>
       </Wrapper>

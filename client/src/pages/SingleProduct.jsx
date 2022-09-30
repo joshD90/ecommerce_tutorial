@@ -1,7 +1,12 @@
 import { Add, Remove } from "@mui/icons-material";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 import styled from "styled-components";
 import { mobile } from "../responsive";
+import { userRequest, publicRequest } from "../requestMethods";
+import { addProduct } from "../redux/cartRedux";
+import { useDispatch } from "react-redux";
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -122,46 +127,80 @@ const Button = styled.button`
 `;
 
 const SingleProduct = () => {
+  const location = useLocation();
+  const productId = location.pathname.split("/")[2];
+  const [product, setProduct] = useState();
+  const [quantity, setQuantity] = useState(1);
+  const [color, setColor] = useState("");
+  const [size, setSize] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const changeQuantity = (direction) => {
+    setQuantity((prev) => (prev + direction !== 0 ? prev + direction : 1));
+  };
+
+  useEffect(() => {
+    const requestData = async () => {
+      try {
+        const res = await publicRequest.get(`/products/find/${productId}`);
+        setProduct(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    requestData();
+  }, [productId]);
+
+  const addToCart = () => {
+    dispatch(addProduct({ ...product, quantity, color, size }));
+  };
+
   return (
     <Wrapper>
       <ImageContainer>
-        <Image src="https://cdn.shopify.com/s/files/1/0293/9277/products/07-16-20Studio1_RM_DJ_14-52-04_41_RC42044_DarkWash_4135_RA_468x.jpg?v=1594941813" />
+        <Image src={product && product.img} />
       </ImageContainer>
       <InfoContainer>
         <div style={{ padding: "0 50px" }}>
-          <Title>Denim Jumpsuit</Title>
-          <Description>
-            This chic Denim Jumpsuit will meet all your summer needs from
-            parties to casual days in.
-          </Description>
-          <Price>$20</Price>
+          <Title>{product && product.title}</Title>
+          <Description>{product && product.desc}</Description>
+          <Price>{product && `€ ${product.price}`}</Price>
           <FilterContainer>
             <Filter>
               <FilterTitle>Color</FilterTitle>
-              <FilterColor color="blue" />
-              <FilterColor color="black" />
-              <FilterColor color="darkblue" />
-              <FilterColor color="gray" />
+              {product &&
+                product.color.map((elem) => (
+                  <FilterColor
+                    color={elem}
+                    key={elem}
+                    onClick={(e) => setColor(e.target.getAttribute("color"))}
+                  />
+                ))}
             </Filter>
             <Filter>
               <FilterTitle>Size</FilterTitle>
-              <FilterSize>
-                <FilterSizeOption>XS</FilterSizeOption>
-                <FilterSizeOption>S</FilterSizeOption>
-                <FilterSizeOption>M</FilterSizeOption>
-                <FilterSizeOption>L</FilterSizeOption>
-                <FilterSizeOption>XL</FilterSizeOption>
-                <FilterSizeOption>XXL</FilterSizeOption>
+              <FilterSize onChange={(e) => setSize(e.target.value)}>
+                {product &&
+                  product.size.map((elem) => (
+                    <FilterSizeOption key={elem}>{elem}</FilterSizeOption>
+                  ))}
               </FilterSize>
             </Filter>
           </FilterContainer>
           <AddContainer>
             <AmountContainer>
-              <Remove style={{ cursor: "pointer" }} />
-              <Amount>1</Amount>
-              <Add style={{ cursor: "pointer" }} />
+              <Remove
+                style={{ cursor: "pointer" }}
+                onClick={() => changeQuantity(-1)}
+              />
+              <Amount>{quantity}</Amount>
+              <Add
+                style={{ cursor: "pointer" }}
+                onClick={() => changeQuantity(1)}
+              />
             </AmountContainer>
-            <Button>ADD TO CART</Button>
+            <Button onClick={addToCart}>ADD TO CART</Button>
           </AddContainer>
         </div>
       </InfoContainer>

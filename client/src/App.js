@@ -4,6 +4,7 @@ import SingleProduct from "./pages/SingleProduct";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Cart from "./pages/Cart";
+import PaymentSuccess from "./pages/PaymentSuccess";
 import {
   BrowserRouter as Router,
   Routes,
@@ -32,6 +33,7 @@ function App() {
             <Route path="/products/:category" element={<ProductList />} />
             <Route path="/product/:id" element={<SingleProduct />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/payment/success" element={<PaymentSuccess />} />
           </Route>
         </Routes>
       </Router>

@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 
 const userRoutes = require("./routes/userRoutes.js");
 const authRoutes = require("./routes/authRoutes.js");
@@ -9,6 +10,8 @@ const cartRoutes = require("./routes/cartRoutes.js");
 const orderRoutes = require("./routes/orderRoutes.js");
 const paymentRoutes = require("./routes/stripeRoutes.js");
 const app = express();
+
+app.use(cors({ origin: "http://localhost:3000" }));
 
 mongoose
   .connect(process.env.MONGO_URI)

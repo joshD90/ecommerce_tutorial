@@ -2,10 +2,14 @@ require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
 const verifyToken = (req, res, next) => {
+  console.log("attempting to verify");
   const authHeader = req.headers.token;
-  if (!authHeader) return res.status(401).json("You are not authenticated");
+  if (!authHeader) {
+    console.log("there is no header", authHeader);
+    return res.status(401).json("You are not authenticated");
+  }
   const token = authHeader.split(" ")[1];
-
+  console.log("there is a header", token);
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     console.log(user);
     if (err) return res.status(403).json("Token is not valid");
